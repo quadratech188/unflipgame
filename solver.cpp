@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <bitset>
 #include <iostream>
+#include <string>
 #include <sys/types.h>
 #include <vector>
 
@@ -20,7 +21,7 @@ void print(State state) {
 		}
 		std::cout << '\n';
 	}
-	std::cout << "-------------------------\n";
+	std::cout << '\n';
 }
 
 std::vector<State> gen_moves() {
@@ -82,7 +83,14 @@ bool solve(State state, uint move_ptr, uint moves_left) {
 	return solve(state, move_ptr + 1, moves_left);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+	if (argc < 2) {
+		std::cout << "USAGE: " << argv[0] << " n_moves\n";
+		return 1;
+	}
+	uint n_moves = std::stoi(argv[1]);
+
+	State problem;
 	moves = gen_moves();
 	std::sort(moves.begin(), moves.end(), [](State a, State b) {
 			return a.to_string() > b.to_string();
@@ -99,17 +107,15 @@ int main() {
 	}
 	largest_bits[moves.size()] = 0;
 
-	State problem;
-
-	uint n_moves;
-	std::cin >> n_moves;
-
-	for (uint i = 0; i < N * N; i++) {
-		char ch;
-		std::cin >> ch;
-		if (ch == 'O') {
-			problem.set(i);
+	for (uint i = 0; i < N; i++) {
+		std::string str;
+		std::getline(std::cin, str);
+		for (uint j = 0; j < N; j++) {
+			if (str[j] == 'O') {
+				problem.set(i);
+			}
 		}
 	}
+	std::cout << "sf\n";
 	solve(problem, 0, n_moves);
 }
