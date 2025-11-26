@@ -112,10 +112,11 @@ int main(int argc, char* argv[]) {
 		std::getline(std::cin, str);
 		for (uint j = 0; j < N; j++) {
 			if (str[j] == 'O') {
-				problem.set(i);
+				problem.set(N * i + j);
 			}
 		}
 	}
-	std::cout << "sf\n";
-	solve(problem, 0, n_moves);
+	if (!solve(problem, 0, n_moves)) {
+		return 1;
+	}
 }
