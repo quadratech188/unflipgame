@@ -4,7 +4,9 @@
 #include <sys/types.h>
 #include <vector>
 
-constexpr uint N = 10;
+#ifndef N
+#define N 7
+#endif
 
 using State = std::bitset<N * N>;
 
@@ -99,22 +101,15 @@ int main() {
 
 	State problem;
 
-	const char problem_str[] =
-		" OO OO OO "
-		"O  O  O  O"
-		"O  O  O  O"
-		" OO OO OO "
-		"O  O  O  O"
-		"O  O  O  O"
-		" OO OO OO "
-		"O  O  O  O"
-		"O  O  O  O"
-		" OO OO OO ";
+	uint n_moves;
+	std::cin >> n_moves;
 
 	for (uint i = 0; i < N * N; i++) {
-		if (problem_str[i] == 'O') {
+		char ch;
+		std::cin >> ch;
+		if (ch == 'O') {
 			problem.set(i);
 		}
 	}
-	solve(problem, 0, 12);
+	solve(problem, 0, n_moves);
 }
