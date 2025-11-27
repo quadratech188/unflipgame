@@ -12,6 +12,7 @@
 using State = std::bitset<N * N>;
 
 std::vector<State> moves;
+std::vector<State> between_masks;
 std::vector<uint> largest_bits;
 
 void print(State state) {
@@ -47,7 +48,6 @@ bool solve(State state, uint move_ptr, uint moves_left) {
 		return false;
 	}
 	if (moves_left == 0) {
-		// TODO: backtrack
 		return state.none();
 	}
 
@@ -55,32 +55,27 @@ bool solve(State state, uint move_ptr, uint moves_left) {
 		// Forced move
 		if (state[largest_bits[move_ptr]]) {
 			state ^= moves[move_ptr];
-			for (int i = largest_bits[move_ptr] - 1; i > largest_bits[move_ptr + 1]; i--) {
-				if (state[i]) {
-					return false;
-				}
+			if ((state & between_masks[move_ptr]).any()) {
+				return false;
 			}
-			if (solve(state, move_ptr + 1, moves_left - 1)) {
-				print(moves[move_ptr]);
-				return true;
-			}
-			return false;
+			return solve(state, move_ptr + 1, moves_left - 1) && (print(move_ptr), true);
 		}
 		else {
-			for (int i = largest_bits[move_ptr] - 1; i > largest_bits[move_ptr + 1]; i--) {
-				if (state[i]) {
-					return false;
-				}
+			if ((state & between_masks[move_ptr]).any()) {
+				return false;
 			}
 			return solve(state, move_ptr + 1, moves_left);
 		}
 	}
 
+	if (solve(state, move_ptr + 1, moves_left)) {
+		return true;
+	}
 	if (solve(state ^ moves[move_ptr], move_ptr + 1, moves_left - 1)) {
 		print(moves[move_ptr]);
 		return true;
 	}
-	return solve(state, move_ptr + 1, moves_left);
+	return false;
 }
 
 int main(int argc, char* argv[]) {
@@ -106,6 +101,13 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	largest_bits[moves.size()] = 0;
+
+	between_masks.resize(moves.size());
+	for (uint i = 0; i < moves.size(); i++) {
+		for (uint j = largest_bits[i + 1] + 1; j < largest_bits[i]; j++) {
+			between_masks[i].set(j);
+		}
+	}
 
 	for (uint i = 0; i < N; i++) {
 		std::string str;
