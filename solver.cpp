@@ -58,7 +58,7 @@ bool solve(State state, uint move_ptr, uint moves_left) {
 			if ((state & between_masks[move_ptr]).any()) {
 				return false;
 			}
-			return solve(state, move_ptr + 1, moves_left - 1) && (print(move_ptr), true);
+			return solve(state, move_ptr + 1, moves_left - 1) && (print(moves[move_ptr]), true);
 		}
 		else {
 			if ((state & between_masks[move_ptr]).any()) {
